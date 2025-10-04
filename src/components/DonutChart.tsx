@@ -2,18 +2,15 @@ import React from 'react';
 
 interface DonutChartProps {
   data: Array<{ value: number }>;
+  colors?: string[];
 }
 
-const DonutChart: React.FC<DonutChartProps> = ({ data }) => {
+const DonutChart: React.FC<DonutChartProps> = ({ data, colors }) => {
   const total = data.reduce((sum, item) => sum + item.value, 0);
-  const colors = [
-    '#8B5CF6', // Purple
-    '#EC4899', // Pink
-    '#F59E0B', // Amber
-    '#10B981', // Green
-    '#3B82F6', // Blue
-    '#EF4444', // Red
+  const defaultColors = [
+    '#8B5CF6', '#EC4899', '#F59E0B', '#10B981', '#3B82F6', '#EF4444'
   ];
+  const chartColors = colors || defaultColors;
 
   if (total === 0) {
     return (
@@ -41,7 +38,6 @@ const DonutChart: React.FC<DonutChartProps> = ({ data }) => {
     const startRad = (startAngle * Math.PI) / 180;
     const endRad = (endAngle * Math.PI) / 180;
     
-    // Outer radius: 45, Inner radius: 25 (for donut effect)
     const outerRadius = 45;
     const innerRadius = 25;
     
@@ -61,7 +57,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ data }) => {
       <path
         key={index}
         d={`M ${x1} ${y1} A ${outerRadius} ${outerRadius} 0 ${largeArc} 1 ${x2} ${y2} L ${x3} ${y3} A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${x4} ${y4} Z`}
-        fill={colors[index % colors.length]}
+        fill={chartColors[index % chartColors.length]}
       />
     );
   });

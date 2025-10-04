@@ -13,14 +13,31 @@ interface PortfolioProps {
 const Portfolio: React.FC<PortfolioProps> = ({ state, dispatch }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoadingPrices, setIsLoadingPrices] = useState(false);
+  const [priceError, setPriceError] = useState<string | null>(null);
   const itemsPerPage = 10;
 
   const fetchPrices = useCallback(async () => {
     if (state.tokens.length === 0) return;
 
-    const tokenIds = state.tokens.map((t) => t.id);
-    const priceData = await fetchTokenPrices(tokenIds);
-    dispatch({ type: 'UPDATE_PRICES', payload: priceData });
+    setIsLoadingPrices(true);
+    setPriceError(null);
+
+    try {
+      const tokenIds = state.tokens.map((t) => t.id);
+      const priceData = await fetchTokenPrices(tokenIds);
+      
+      if (Object.keys(priceData).length === 0) {
+        setPriceError('Failed to fetch prices. Please try again.');
+      } else {
+        dispatch({ type: 'UPDATE_PRICES', payload: priceData });
+      }
+    } catch (error) {
+      console.error('Error fetching prices:', error);
+      setPriceError('Failed to fetch prices. Please check your connection.');
+    } finally {
+      setIsLoadingPrices(false);
+    }
   }, [state.tokens, dispatch]);
 
   useEffect(() => {
@@ -54,10 +71,14 @@ const Portfolio: React.FC<PortfolioProps> = ({ state, dispatch }) => {
   const totalValue = portfolioData.reduce((sum, item) => sum + item.value, 0);
   const chartData = portfolioData.filter((d) => d.value > 0);
 
+  // Chart colors matching legend
+  const chartColors = ['#8B5CF6', '#EC4899', '#F59E0B', '#10B981', '#3B82F6', '#EF4444'];
+
   // Calculate percentages for legend
-  const legendData = chartData.map(token => ({
+  const legendData = chartData.map((token, index) => ({
     ...token,
-    percentage: ((token.value / totalValue) * 100).toFixed(1)
+    percentage: ((token.value / totalValue) * 100).toFixed(1),
+    color: chartColors[index % chartColors.length]
   }));
 
   const paginatedTokens = portfolioData.slice(
@@ -82,42 +103,65 @@ const Portfolio: React.FC<PortfolioProps> = ({ state, dispatch }) => {
             Last updated: {new Date(state.lastUpdated).toLocaleTimeString()}
           </div>
         )}
+        {isLoadingPrices && (
+          <div className="portfolio-updated" style={{ color: 'var(--accent-green)' }}>
+            ⟳ Updating prices...
+          </div>
+        )}
+        {priceError && (
+          <div className="portfolio-updated" style={{ color: 'var(--negative)' }}>
+            ⚠️ {priceError}
+          </div>
+        )}
 
         <div className="portfolio-content">
           <div style={{ maxWidth: '300px', margin: '0 auto' }}>
             {chartData.length > 0 ? (
-              <DonutChart data={chartData} />
+              <DonutChart data={chartData} colors={chartColors} />
             ) : (
               <div style={{ 
                 height: '300px', 
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center',
-                color: 'var(--text-secondary)'
+                color: 'var(--text-secondary)',
+                flexDirection: 'column',
+                gap: '12px'
               }}>
-                No holdings to display
+                <div style={{ fontSize: '48px' }}>📊</div>
+                <div>No holdings to display</div>
+                <div style={{ fontSize: '13px' }}>Edit holdings to see your portfolio chart</div>
               </div>
             )}
           </div>
 
           <div className="chart-legend">
-            {legendData.map((token, index) => (
-              <div key={token.id} className="legend-item">
-                <div className="legend-left">
-                  <div 
-                    className="legend-color" 
-                    style={{ 
-                      background: ['#8B5CF6', '#EC4899', '#F59E0B', '#10B981', '#3B82F6', '#EF4444'][index % 6]
-                    }}
-                  />
-                  <div>
-                    <div className="legend-name">{token.name}</div>
-                    <div className="legend-symbol">{token.symbol}</div>
+            {legendData.length > 0 ? (
+              legendData.map((token) => (
+                <div key={token.id} className="legend-item">
+                  <div className="legend-left">
+                    <div 
+                      className="legend-color" 
+                      style={{ background: token.color }}
+                    />
+                    <div>
+                      <div className="legend-name">{token.name}</div>
+                      <div className="legend-symbol">{token.symbol}</div>
+                    </div>
                   </div>
+                  <div className="legend-percentage">{token.percentage}%</div>
                 </div>
-                <div className="legend-percentage">{token.percentage}%</div>
+              ))
+            ) : (
+              <div style={{ 
+                color: 'var(--text-secondary)', 
+                fontSize: '14px',
+                textAlign: 'center',
+                padding: '20px'
+              }}>
+                Set token holdings to see portfolio breakdown
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
@@ -129,8 +173,17 @@ const Portfolio: React.FC<PortfolioProps> = ({ state, dispatch }) => {
           Watchlist
         </div>
         <div className="watchlist-actions">
-          <button onClick={fetchPrices} className="refresh-btn">
-            <span>↻</span> Refresh Prices
+          <button 
+            onClick={fetchPrices} 
+            className="refresh-btn"
+            disabled={isLoadingPrices}
+            style={{ opacity: isLoadingPrices ? 0.6 : 1 }}
+          >
+            <span style={{ 
+              display: 'inline-block',
+              animation: isLoadingPrices ? 'spin 1s linear infinite' : 'none'
+            }}>↻</span> 
+            {isLoadingPrices ? 'Refreshing...' : 'Refresh Prices'}
           </button>
           <button onClick={() => setIsModalOpen(true)} className="add-token-btn">
             <span>+</span> Add Token
@@ -143,12 +196,13 @@ const Portfolio: React.FC<PortfolioProps> = ({ state, dispatch }) => {
           tokens={paginatedTokens}
           onUpdateHoldings={handleUpdateHoldings}
           onRemoveToken={handleRemoveToken}
+          isLoading={isLoadingPrices && state.tokens.length > 0}
         />
 
         {totalPages > 1 && (
           <div className="pagination">
             <div className="pagination-info">
-              {currentPage} of {totalPages} pages
+              Page {currentPage} of {totalPages}
             </div>
             <div className="pagination-buttons">
               <button
@@ -180,3 +234,13 @@ const Portfolio: React.FC<PortfolioProps> = ({ state, dispatch }) => {
 };
 
 export default Portfolio;
+
+// Add keyframe animation for spinner
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+`;
+document.head.appendChild(style);

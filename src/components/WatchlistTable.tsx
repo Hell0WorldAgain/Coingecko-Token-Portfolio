@@ -6,12 +6,14 @@ interface WatchlistTableProps {
   tokens: TokenWithPrice[];
   onUpdateHoldings: (tokenId: string, holdings: number) => void;
   onRemoveToken: (tokenId: string) => void;
+  isLoading?: boolean;
 }
 
 const WatchlistTable: React.FC<WatchlistTableProps> = ({
   tokens,
   onUpdateHoldings,
   onRemoveToken,
+  isLoading = false
 }) => {
   const [editingToken, setEditingToken] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
@@ -40,14 +42,19 @@ const WatchlistTable: React.FC<WatchlistTableProps> = ({
           <tr>
             <td colSpan={7} className="empty-state">
               <div style={{ padding: '40px 20px' }}>
-                <p style={{ marginBottom: '8px' }}>No tokens in your watchlist</p>
-                <p style={{ fontSize: '13px' }}>Click "Add Token" to get started</p>
+                <div style={{ fontSize: '48px', marginBottom: '16px' }}>📈</div>
+                <p style={{ marginBottom: '8px', fontSize: '16px', fontWeight: 500 }}>
+                  No tokens in your watchlist
+                </p>
+                <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
+                  Click "Add Token" to start tracking your portfolio
+                </p>
               </div>
             </td>
           </tr>
         ) : (
           tokens.map((token) => (
-            <tr key={token.id}>
+            <tr key={token.id} style={{ opacity: isLoading ? 0.6 : 1 }}>
               <td>
                 <div className="token-info">
                   <img src={token.image} alt={token.name} className="token-icon" />
@@ -58,17 +65,27 @@ const WatchlistTable: React.FC<WatchlistTableProps> = ({
                 </div>
               </td>
               <td className="price">
-                $
-                {token.price?.toLocaleString('en-US', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: token.price < 1 ? 6 : 2,
-                }) || '0.00'}
+                {token.price > 0 ? (
+                  <>
+                    $
+                    {token.price.toLocaleString('en-US', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: token.price < 1 ? 6 : 2,
+                    })}
+                  </>
+                ) : (
+                  <span style={{ color: 'var(--text-secondary)' }}>Loading...</span>
+                )}
               </td>
               <td>
-                <span className={token.change24h >= 0 ? 'change-positive' : 'change-negative'}>
-                  {token.change24h >= 0 ? '+' : ''}
-                  {token.change24h?.toFixed(2) || '0.00'}%
-                </span>
+                {token.price > 0 ? (
+                  <span className={token.change24h >= 0 ? 'change-positive' : 'change-negative'}>
+                    {token.change24h >= 0 ? '+' : ''}
+                    {token.change24h.toFixed(2)}%
+                  </span>
+                ) : (
+                  <span style={{ color: 'var(--text-secondary)' }}>--</span>
+                )}
               </td>
               <td>
                 <Sparkline data={token.sparkline} />
@@ -87,7 +104,7 @@ const WatchlistTable: React.FC<WatchlistTableProps> = ({
                     autoFocus
                     className="holdings-input"
                     min="0"
-                    step="0.01"
+                    step="any"
                   />
                 ) : (
                   <div

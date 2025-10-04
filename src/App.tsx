@@ -10,16 +10,18 @@ function App() {
   // Load state from localStorage on mount
   useEffect(() => {
     const savedState = localStorage.getItem('portfolioState');
-    if (savedState) {
+    const hasVisited = localStorage.getItem('hasVisited');
+    
+    if (savedState && hasVisited) {
+      // User has visited before, load their saved state
       try {
-        const parsed = JSON.parse(savedState);
-        // Only load if it has tokens, otherwise use default
-        if (parsed.tokens && parsed.tokens.length > 0) {
-          dispatch({ type: 'LOAD_STATE', payload: parsed });
-        }
+        dispatch({ type: 'LOAD_STATE', payload: JSON.parse(savedState) });
       } catch (err) {
         console.error('Failed to load state', err);
       }
+    } else {
+      // First visit - use default tokens
+      localStorage.setItem('hasVisited', 'true');
     }
   }, []);
 

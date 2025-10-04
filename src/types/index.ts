@@ -56,3 +56,9 @@ export interface TrendingCoin {
     large: string;
   };
 }
+
+// UI State types
+export interface LoadingState {
+  isLoading: boolean;
+  error: string | null;
+}

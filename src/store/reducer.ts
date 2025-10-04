@@ -1,6 +1,6 @@
 import type { PortfolioState, PortfolioAction } from '../types';
 
-// Initial state with default tokens
+// Initial state with default tokens for demo
 export const initialState: PortfolioState = {
   tokens: [
     {
