@@ -1,4 +1,5 @@
 import type { PortfolioState, PortfolioAction } from '../types';
+import * as actionTypes from './actions';
 
 // Initial state with default tokens for demo
 export const initialState: PortfolioState = {
@@ -45,20 +46,20 @@ export const initialState: PortfolioState = {
 
 // Portfolio reducer
 export const portfolioReducer = (
-  state: PortfolioState,
+  state: PortfolioState = initialState,
   action: PortfolioAction
 ): PortfolioState => {
   switch (action.type) {
-    case 'ADD_TOKENS':
+    case actionTypes.ADD_TOKENS:
       const newTokens = action.payload.filter(
-        t => !state.tokens.find(st => st.id === t.id)
+        (t: any) => !state.tokens.find(st => st.id === t.id)
       );
       return {
         ...state,
         tokens: [...state.tokens, ...newTokens]
       };
 
-    case 'UPDATE_HOLDINGS':
+    case actionTypes.UPDATE_HOLDINGS:
       return {
         ...state,
         tokens: state.tokens.map(t =>
@@ -68,20 +69,20 @@ export const portfolioReducer = (
         )
       };
 
-    case 'REMOVE_TOKEN':
+    case actionTypes.REMOVE_TOKEN:
       return {
         ...state,
         tokens: state.tokens.filter(t => t.id !== action.payload)
       };
 
-    case 'UPDATE_PRICES':
+    case actionTypes.UPDATE_PRICES:
       return {
         ...state,
         prices: action.payload,
         lastUpdated: Date.now()
       };
 
-    case 'LOAD_STATE':
+    case actionTypes.LOAD_STATE:
       return action.payload;
 
     default:

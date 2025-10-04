@@ -2,15 +2,16 @@ import React, { useState, useEffect, useCallback } from 'react';
 import DonutChart from './DonutChart';
 import AddTokenModal from './AddTokenModal';
 import WatchlistTable from './WatchlistTable';
-import type { PortfolioState, PortfolioAction, Token, TokenWithPrice } from '../types';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { addTokens, updateHoldings, removeToken, updatePrices } from '../store/actions';
+import type { Token, TokenWithPrice } from '../types';
 import { fetchTokenPrices } from '../services/coingecko';
 
-interface PortfolioProps {
-  state: PortfolioState;
-  dispatch: React.Dispatch<PortfolioAction>;
-}
-
-const Portfolio: React.FC<PortfolioProps> = ({ state, dispatch }) => {
+const Portfolio: React.FC = () => {
+  // Redux state and dispatch
+  const dispatch = useAppDispatch();
+  const state = useAppSelector((state) => state);
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoadingPrices, setIsLoadingPrices] = useState(false);
@@ -30,7 +31,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ state, dispatch }) => {
       if (Object.keys(priceData).length === 0) {
         setPriceError('Failed to fetch prices. Please try again.');
       } else {
-        dispatch({ type: 'UPDATE_PRICES', payload: priceData });
+        dispatch(updatePrices(priceData));
       }
     } catch (error) {
       console.error('Error fetching prices:', error);
@@ -47,15 +48,15 @@ const Portfolio: React.FC<PortfolioProps> = ({ state, dispatch }) => {
   }, [fetchPrices]);
 
   const handleAddTokens = (newTokens: Token[]) => {
-    dispatch({ type: 'ADD_TOKENS', payload: newTokens });
+    dispatch(addTokens(newTokens));
   };
 
   const handleUpdateHoldings = (tokenId: string, holdings: number) => {
-    dispatch({ type: 'UPDATE_HOLDINGS', payload: { tokenId, holdings } });
+    dispatch(updateHoldings(tokenId, holdings));
   };
 
   const handleRemoveToken = (tokenId: string) => {
-    dispatch({ type: 'REMOVE_TOKEN', payload: tokenId });
+    dispatch(removeToken(tokenId));
   };
 
   const portfolioData: TokenWithPrice[] = state.tokens.map((token) => {
@@ -71,10 +72,8 @@ const Portfolio: React.FC<PortfolioProps> = ({ state, dispatch }) => {
   const totalValue = portfolioData.reduce((sum, item) => sum + item.value, 0);
   const chartData = portfolioData.filter((d) => d.value > 0);
 
-  // Chart colors matching legend
   const chartColors = ['#8B5CF6', '#EC4899', '#F59E0B', '#10B981', '#3B82F6', '#EF4444'];
 
-  // Calculate percentages for legend
   const legendData = chartData.map((token, index) => ({
     ...token,
     percentage: ((token.value / totalValue) * 100).toFixed(1),
@@ -234,13 +233,3 @@ const Portfolio: React.FC<PortfolioProps> = ({ state, dispatch }) => {
 };
 
 export default Portfolio;
-
-// Add keyframe animation for spinner
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-`;
-document.head.appendChild(style);
