@@ -12,6 +12,7 @@ export interface PriceData {
   price: number;
   change24h: number;
   sparkline: number[];
+  previousPrice?: number; // For price change animation
 }
 
 // Portfolio state interface
@@ -19,6 +20,7 @@ export interface PortfolioState {
   tokens: Token[];
   prices: Record<string, PriceData>;
   lastUpdated: number | null;
+  realTimeEnabled?: boolean;
 }
 
 // Action types
@@ -27,11 +29,14 @@ export type PortfolioAction =
   | { type: 'UPDATE_HOLDINGS'; payload: { tokenId: string; holdings: number } }
   | { type: 'REMOVE_TOKEN'; payload: string }
   | { type: 'UPDATE_PRICES'; payload: Record<string, PriceData> }
-  | { type: 'LOAD_STATE'; payload: PortfolioState };
+  | { type: 'UPDATE_SINGLE_PRICE'; payload: { tokenId: string; price: number } }
+  | { type: 'LOAD_STATE'; payload: PortfolioState }
+  | { type: 'SET_REAL_TIME_MODE'; payload: boolean };
 
 // Token with price data
 export interface TokenWithPrice extends Token, PriceData {
   value: number;
+  priceChange?: 'up' | 'down' | 'neutral';
 }
 
 // API response types

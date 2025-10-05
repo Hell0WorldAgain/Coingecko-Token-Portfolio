@@ -41,7 +41,8 @@ export const initialState: PortfolioState = {
     }
   ],
   prices: {},
-  lastUpdated: null
+  lastUpdated: null,
+  realTimeEnabled: true
 };
 
 // Portfolio reducer
@@ -76,10 +77,39 @@ export const portfolioReducer = (
       };
 
     case actionTypes.UPDATE_PRICES:
+      // Store previous prices for animation
+      const updatedPrices: Record<string, any> = {};
+      Object.keys(action.payload).forEach(tokenId => {
+        updatedPrices[tokenId] = {
+          ...action.payload[tokenId],
+          previousPrice: state.prices[tokenId]?.price
+        };
+      });
+      
       return {
         ...state,
-        prices: action.payload,
+        prices: updatedPrices,
         lastUpdated: Date.now()
+      };
+
+    case actionTypes.UPDATE_SINGLE_PRICE:
+      return {
+        ...state,
+        prices: {
+          ...state.prices,
+          [action.payload.tokenId]: {
+            ...state.prices[action.payload.tokenId],
+            previousPrice: state.prices[action.payload.tokenId]?.price,
+            price: action.payload.price
+          }
+        },
+        lastUpdated: Date.now()
+      };
+
+    case actionTypes.SET_REAL_TIME_MODE:
+      return {
+        ...state,
+        realTimeEnabled: action.payload
       };
 
     case actionTypes.LOAD_STATE:

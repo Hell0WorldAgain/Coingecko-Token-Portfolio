@@ -62,8 +62,58 @@ body {
   }
 }
 
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes priceUp {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(16, 185, 129, 0.2);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes priceDown {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(239, 68, 68, 0.2);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.2s ease-out;
+}
+
+.price-up {
+  animation: priceUp 1s ease-out;
+}
+
+.price-down {
+  animation: priceDown 1s ease-out;
 }
 
 /* Button base styles */

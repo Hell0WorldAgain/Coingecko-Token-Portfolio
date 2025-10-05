@@ -134,7 +134,7 @@ const WatchlistTable: React.FC<WatchlistTableProps> = ({
                 </button>
                 {menuOpen === token.id && (
                   <>
-                    <div 
+                    <div
                       style={{
                         position: 'fixed',
                         inset: 0,
@@ -154,6 +154,22 @@ const WatchlistTable: React.FC<WatchlistTableProps> = ({
                       </button>
                     </div>
                   </>
+                )}
+              </td>
+              <td
+                className={`price ${token.priceChange ? `price-${token.priceChange}` : ''}`}
+                key={`${token.id}-${token.price}`} // Force re-render on price change
+              >
+                {token.price > 0 ? (
+                  <>
+                    $
+                    {token.price.toLocaleString('en-US', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: token.price < 1 ? 6 : 2,
+                    })}
+                  </>
+                ) : (
+                  <span style={{ color: 'var(--text-secondary)' }}>Loading...</span>
                 )}
               </td>
             </tr>
