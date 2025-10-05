@@ -1,78 +1,54 @@
-<<<<<<< HEAD
-# Coingecko-Token-Portfolio
-Coingecko Token Portfolio dashboard created using React + Vite 
-=======
-# React + TypeScript + Vite
+# Coingecko Token Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, real-time cryptocurrency portfolio tracker built with React, TypeScript, Redux, and Vite.
 
-Currently, two official plugins are available:
+![React](https://img.shields.io/badge/React-18.2-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue) ![Redux](https://img.shields.io/badge/Redux-5.0-purple) ![Vite](https://img.shields.io/badge/Vite-5.0-646CFF)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+-  **Real-time Portfolio Tracking** - Auto-updating prices with configurable intervals (10s-5m)
+-  **Interactive Watchlist** - Add/remove tokens, edit holdings, view 7-day sparklines
+-  **Live Price Updates** - CoinGecko API integration with rate-limit protection
+-  **Beautiful UI** - Dark theme, responsive design, smooth animations
+-  **Data Persistence** - Redux + LocalStorage for state management
+-  **Wallet Connect** - Mock wallet integration (ready for Web3)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Quick Start
 
-## Expanding the ESLint configuration
+### Clone repository
+git clone https://github.com/Hell0WorldAgain/Coingecko-Token-Portfolio.git
+cd Coingecko-Token-Portfolio
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Install dependencies
+npm install
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Start development server
+npm run dev
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Build for production
+npm run build
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project Structure
+```bash
+src/
+├── components/          # React components (Portfolio, Modal, Chart, etc.)
+├── store/              # Redux store, actions, reducers
+├── services/           # CoinGecko API integration
+├── types/              # TypeScript definitions
+├── App.tsx             # Main app
+└── index.css           # Global styles
+
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Tech Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
->>>>>>> master
+- React 18 - UI library
+- TypeScript - Type safety
+- Redux - State management
+- Vite - Build tool
+- CoinGecko API - Crypto data (free tier: 10-30 calls/min)
+<br/><br/>
+<div align="center">
+Built with ❤️ by <a href="https://www.linkedin.com/in/abhishek-ch0udhary/">Abhishek</a> <br/>
+<a href ="https://coingecko-token-portfolio.vercel.app/"> Demo </a>
+</div>
