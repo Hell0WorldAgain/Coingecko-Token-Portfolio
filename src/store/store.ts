@@ -1,5 +1,5 @@
-import { createStore } from 'redux';
-import { portfolioReducer } from './reducer';
+import { configureStore, createListenerMiddleware } from '@reduxjs/toolkit';
+import { portfolioReducer } from './portfolioSlice';
 import type { PortfolioState } from '../types';
 
 const loadState = (): PortfolioState | undefined => {
@@ -18,22 +18,26 @@ const loadState = (): PortfolioState | undefined => {
   }
 };
 
-const saveState = (state: PortfolioState) => {
-  try {
-    const serializedState = JSON.stringify(state);
-    localStorage.setItem('portfolioState', serializedState);
-  } catch (err) {
-    console.error('Failed to save state to localStorage:', err);
-  }
-};
+const listenerMiddleware = createListenerMiddleware();
 
-export const store = createStore(
-  portfolioReducer,
-  loadState()
-);
+listenerMiddleware.startListening({
+  predicate: () => true,
+  effect: (_action, listenerApi) => {
+    const state = listenerApi.getState() as PortfolioState;
+    try {
+      localStorage.setItem('portfolioState', JSON.stringify(state));
+    } catch (err) {
+      console.error('Failed to save state to localStorage:', err);
+    }
+  },
+});
 
-store.subscribe(() => {
-  saveState(store.getState());
+export const store = configureStore({
+  reducer: portfolioReducer,
+  preloadedState: loadState(),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().prepend(listenerMiddleware.middleware),
+  devTools: import.meta.env.MODE !== 'production',
 });
 
 export type RootState = ReturnType<typeof store.getState>;

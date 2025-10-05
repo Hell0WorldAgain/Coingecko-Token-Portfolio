@@ -14,7 +14,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, colors }) => {
 
   if (total === 0) {
     return (
-      <div style={{ 
+      <div style= {{ 
         width: '100%', 
         height: '300px', 
         display: 'flex', 

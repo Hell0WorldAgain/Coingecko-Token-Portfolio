@@ -4,7 +4,11 @@ const WalletConnect: React.FC = () => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
 
   const connectWallet = () => {
-    const mockAddress = '0x' + Math.random().toString(16).substr(2, 40);
+    const randomBytes = new Uint8Array(20);
+    crypto.getRandomValues(randomBytes);
+    const mockAddress = '0x' + Array.from(randomBytes)
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
     setWalletAddress(mockAddress);
   };
 

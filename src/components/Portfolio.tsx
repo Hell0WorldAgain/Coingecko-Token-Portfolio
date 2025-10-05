@@ -3,7 +3,7 @@ import DonutChart from './DonutChart';
 import AddTokenModal from './AddTokenModal';
 import WatchlistTable from './WatchlistTable';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { addTokens, updateHoldings, removeToken, updatePrices, setRealTimeMode } from '../store/actions';
+import { addTokens, updateHoldings, removeToken, updatePrices, setRealTimeMode } from '../store/portfolioSlice';
 import type { Token, TokenWithPrice } from '../types';
 import { fetchTokenPrices } from '../services/coingecko';
 
@@ -15,8 +15,8 @@ const Portfolio: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoadingPrices, setIsLoadingPrices] = useState(false);
   const [priceError, setPriceError] = useState<string | null>(null);
-  const [updateInterval, setUpdateInterval] = useState<number>(30); // seconds
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [updateInterval, setUpdateInterval] = useState<number>(30);
+  const intervalIdRef = useRef<number | null>(null);
   const itemsPerPage = 10;
 
   const fetchPrices = useCallback(async (showLoading = true) => {
@@ -26,7 +26,7 @@ const Portfolio: React.FC = () => {
     setPriceError(null);
 
     try {
-      const tokenIds = state.tokens.map((t) => t.id);
+      const tokenIds = state.tokens.map((t: Token) => t.id);
       const priceData = await fetchTokenPrices(tokenIds);
       
       if (Object.keys(priceData).length === 0) {
@@ -47,46 +47,41 @@ const Portfolio: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!state.realTimeEnabled) {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      return;
+    if (intervalIdRef.current !== null) {
+      window.clearInterval(intervalIdRef.current);
+      intervalIdRef.current = null;
     }
 
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
+    if (!state.realTimeEnabled) return;
 
-    intervalRef.current = setInterval(() => {
+    intervalIdRef.current = window.setInterval(() => {
       fetchPrices(false);
     }, updateInterval * 1000);
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+      if (intervalIdRef.current !== null) {
+        window.clearInterval(intervalIdRef.current);
       }
     };
   }, [fetchPrices, updateInterval, state.realTimeEnabled]);
 
-  const handleAddTokens = (newTokens: Token[]) => {
+  const handleAddTokens = useCallback((newTokens: Token[]) => {
     dispatch(addTokens(newTokens));
-  };
+  }, [dispatch]);
 
-  const handleUpdateHoldings = (tokenId: string, holdings: number) => {
-    dispatch(updateHoldings(tokenId, holdings));
-  };
+  const handleUpdateHoldings = useCallback((tokenId: string, holdings: number) => {
+    dispatch(updateHoldings({ tokenId, holdings }));
+  }, [dispatch]);
 
-  const handleRemoveToken = (tokenId: string) => {
+  const handleRemoveToken = useCallback((tokenId: string) => {
     dispatch(removeToken(tokenId));
-  };
+  }, [dispatch]);
 
-  const toggleRealTime = () => {
+  const toggleRealTime = useCallback(() => {
     dispatch(setRealTimeMode(!state.realTimeEnabled));
-  };
+  }, [state.realTimeEnabled, dispatch]);
 
-  const portfolioData: TokenWithPrice[] = state.tokens.map((token) => {
+  const portfolioData: TokenWithPrice[] = state.tokens.map((token: Token) => {
     const priceData = state.prices[token.id] || {
       price: 0,
       change24h: 0,
