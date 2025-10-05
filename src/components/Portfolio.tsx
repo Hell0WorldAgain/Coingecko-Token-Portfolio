@@ -42,12 +42,10 @@ const Portfolio: React.FC = () => {
     }
   }, [state.tokens, dispatch]);
 
-  // Initial fetch
   useEffect(() => {
     fetchPrices(true);
   }, []);
 
-  // Real-time updates with configurable interval
   useEffect(() => {
     if (!state.realTimeEnabled) {
       if (intervalRef.current) {
@@ -57,14 +55,12 @@ const Portfolio: React.FC = () => {
       return;
     }
 
-    // Clear existing interval
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
 
-    // Set new interval
     intervalRef.current = setInterval(() => {
-      fetchPrices(false); // Silent update
+      fetchPrices(false);
     }, updateInterval * 1000);
 
     return () => {
@@ -100,7 +96,6 @@ const Portfolio: React.FC = () => {
     
     const value = token.holdings * priceData.price;
     
-    // Determine price change direction
     let priceChange: 'up' | 'down' | 'neutral' = 'neutral';
     if (priceData.previousPrice && priceData.price !== priceData.previousPrice) {
       priceChange = priceData.price > priceData.previousPrice ? 'up' : 'down';
@@ -128,7 +123,6 @@ const Portfolio: React.FC = () => {
 
   return (
     <div className="portfolio-container">
-      {/* Real-time Controls */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -195,7 +189,6 @@ const Portfolio: React.FC = () => {
         </div>
       </div>
 
-      {/* Portfolio Card with Chart */}
       <div className="portfolio-card">
         <div className="portfolio-header">Portfolio Total</div>
         <div className="portfolio-value">
@@ -275,7 +268,6 @@ const Portfolio: React.FC = () => {
         </div>
       </div>
 
-      {/* Watchlist Section */}
       <div className="watchlist-header">
         <div className="watchlist-title">
           <span className="star-icon">⭐</span>

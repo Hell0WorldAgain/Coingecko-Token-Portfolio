@@ -4,7 +4,6 @@ const WalletConnect: React.FC = () => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
 
   const connectWallet = () => {
-    // Mock wallet connection - generates a random Ethereum address
     const mockAddress = '0x' + Math.random().toString(16).substr(2, 40);
     setWalletAddress(mockAddress);
   };

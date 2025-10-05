@@ -1,4 +1,3 @@
-// Token interface
 export interface Token {
   id: string;
   symbol: string;
@@ -7,15 +6,13 @@ export interface Token {
   holdings: number;
 }
 
-// Price data interface
 export interface PriceData {
   price: number;
   change24h: number;
   sparkline: number[];
-  previousPrice?: number; // For price change animation
+  previousPrice?: number; 
 }
 
-// Portfolio state interface
 export interface PortfolioState {
   tokens: Token[];
   prices: Record<string, PriceData>;
@@ -23,7 +20,6 @@ export interface PortfolioState {
   realTimeEnabled?: boolean;
 }
 
-// Action types
 export type PortfolioAction =
   | { type: 'ADD_TOKENS'; payload: Token[] }
   | { type: 'UPDATE_HOLDINGS'; payload: { tokenId: string; holdings: number } }
@@ -33,13 +29,11 @@ export type PortfolioAction =
   | { type: 'LOAD_STATE'; payload: PortfolioState }
   | { type: 'SET_REAL_TIME_MODE'; payload: boolean };
 
-// Token with price data
 export interface TokenWithPrice extends Token, PriceData {
   value: number;
   priceChange?: 'up' | 'down' | 'neutral';
 }
 
-// API response types
 export interface CoinGeckoMarket {
   id: string;
   symbol: string;
@@ -62,7 +56,6 @@ export interface TrendingCoin {
   };
 }
 
-// UI State types
 export interface LoadingState {
   isLoading: boolean;
   error: string | null;

@@ -1,7 +1,6 @@
 import type { PortfolioState, PortfolioAction } from '../types';
 import * as actionTypes from './actions';
 
-// Initial state with default tokens for demo
 export const initialState: PortfolioState = {
   tokens: [
     {
@@ -45,7 +44,6 @@ export const initialState: PortfolioState = {
   realTimeEnabled: true
 };
 
-// Portfolio reducer
 export const portfolioReducer = (
   state: PortfolioState = initialState,
   action: PortfolioAction
@@ -77,7 +75,6 @@ export const portfolioReducer = (
       };
 
     case actionTypes.UPDATE_PRICES:
-      // Store previous prices for animation
       const updatedPrices: Record<string, any> = {};
       Object.keys(action.payload).forEach(tokenId => {
         updatedPrices[tokenId] = {

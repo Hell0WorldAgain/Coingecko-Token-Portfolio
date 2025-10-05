@@ -106,7 +106,6 @@ const AddTokenModal: React.FC<AddTokenModalProps> = ({ isOpen, onClose, onAddTok
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      {/* Modal Header */}
       <div style={{
         padding: '24px',
         borderBottom: '1px solid var(--border-color)',
@@ -132,7 +131,6 @@ const AddTokenModal: React.FC<AddTokenModalProps> = ({ isOpen, onClose, onAddTok
           </button>
         </div>
         
-        {/* Search Input */}
         <input
           type="text"
           placeholder="Search tokens (e.g., ETH, SOL)"
@@ -153,7 +151,6 @@ const AddTokenModal: React.FC<AddTokenModalProps> = ({ isOpen, onClose, onAddTok
         />
       </div>
 
-      {/* Token List */}
       <div style={{
         padding: '16px 24px',
         maxHeight: '400px',
@@ -217,7 +214,6 @@ const AddTokenModal: React.FC<AddTokenModalProps> = ({ isOpen, onClose, onAddTok
                 </div>
               </div>
               
-              {/* Checkbox */}
               <div style={{
                 width: '20px',
                 height: '20px',
@@ -249,7 +245,6 @@ const AddTokenModal: React.FC<AddTokenModalProps> = ({ isOpen, onClose, onAddTok
         </div>
       </div>
 
-      {/* Modal Footer */}
       <div style={{
         padding: '20px 24px',
         borderTop: '1px solid var(--border-color)',

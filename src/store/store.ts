@@ -2,7 +2,6 @@ import { createStore } from 'redux';
 import { portfolioReducer } from './reducer';
 import type { PortfolioState } from '../types';
 
-// Load state from localStorage
 const loadState = (): PortfolioState | undefined => {
   try {
     const serializedState = localStorage.getItem('portfolioState');
@@ -11,7 +10,6 @@ const loadState = (): PortfolioState | undefined => {
     if (serializedState && hasVisited) {
       return JSON.parse(serializedState);
     }
-    // First visit - return undefined to use initialState from reducer
     localStorage.setItem('hasVisited', 'true');
     return undefined;
   } catch (err) {
@@ -20,7 +18,6 @@ const loadState = (): PortfolioState | undefined => {
   }
 };
 
-// Save state to localStorage
 const saveState = (state: PortfolioState) => {
   try {
     const serializedState = JSON.stringify(state);
@@ -30,17 +27,14 @@ const saveState = (state: PortfolioState) => {
   }
 };
 
-// Create Redux store
 export const store = createStore(
   portfolioReducer,
   loadState()
 );
 
-// Subscribe to store changes and save to localStorage
 store.subscribe(() => {
   saveState(store.getState());
 });
 
-// Export types
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

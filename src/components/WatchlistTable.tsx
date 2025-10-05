@@ -158,7 +158,7 @@ const WatchlistTable: React.FC<WatchlistTableProps> = ({
               </td>
               <td
                 className={`price ${token.priceChange ? `price-${token.priceChange}` : ''}`}
-                key={`${token.id}-${token.price}`} // Force re-render on price change
+                key={`${token.id}-${token.price}`}
               >
                 {token.price > 0 ? (
                   <>

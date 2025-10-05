@@ -5,7 +5,6 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      {/* Header */}
       <header className="app-header">
         <div className="app-logo">
           <div className="logo-icon">T</div>
@@ -14,7 +13,6 @@ function App() {
         <WalletConnect />
       </header>
 
-      {/* Main Content */}
       <Portfolio />
     </div>
   );

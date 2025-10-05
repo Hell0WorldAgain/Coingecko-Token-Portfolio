@@ -1,6 +1,5 @@
 import type { Token, PriceData, PortfolioState } from '../types';
 
-// Action Types
 export const ADD_TOKENS = 'ADD_TOKENS';
 export const UPDATE_HOLDINGS = 'UPDATE_HOLDINGS';
 export const REMOVE_TOKEN = 'REMOVE_TOKEN';
@@ -9,7 +8,6 @@ export const UPDATE_SINGLE_PRICE = 'UPDATE_SINGLE_PRICE';
 export const LOAD_STATE = 'LOAD_STATE';
 export const SET_REAL_TIME_MODE = 'SET_REAL_TIME_MODE';
 
-// Action Creators
 export const addTokens = (tokens: Token[]) => ({
   type: ADD_TOKENS as typeof ADD_TOKENS,
   payload: tokens,

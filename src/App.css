@@ -3,7 +3,6 @@
   background: var(--bg-primary);
 }
 
-/* Header Styles */
 .app-header {
   display: flex;
   align-items: center;
@@ -33,7 +32,6 @@
   font-size: 14px;
 }
 
-/* Connect Wallet Button */
 .connect-wallet-btn {
   background: var(--accent-green);
   color: var(--bg-primary);
@@ -75,14 +73,12 @@
   color: var(--text-primary);
 }
 
-/* Portfolio Container */
 .portfolio-container {
   max-width: 1400px;
   margin: 0 auto;
   padding: 32px;
 }
 
-/* Portfolio Card */
 .portfolio-card {
   background: var(--bg-secondary);
   border-radius: 16px;
@@ -117,7 +113,6 @@
   align-items: center;
 }
 
-/* Chart Legend */
 .chart-legend {
   display: flex;
   flex-direction: column;
@@ -161,7 +156,6 @@
   font-weight: 500;
 }
 
-/* Watchlist Section */
 .watchlist-header {
   display: flex;
   align-items: center;
@@ -220,7 +214,6 @@
   background: var(--accent-green-hover);
 }
 
-/* Table Styles */
 .watchlist-table {
   background: var(--bg-secondary);
   border-radius: 16px;
@@ -362,7 +355,6 @@
   background: rgba(239, 68, 68, 0.1);
 }
 
-/* Pagination */
 .pagination {
   display: flex;
   align-items: center;
@@ -398,14 +390,12 @@
   opacity: 0.4;
 }
 
-/* Empty State */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
   color: var(--text-secondary);
 }
 
-/* Mobile Responsive */
 @media (max-width: 1024px) {
   .portfolio-content {
     grid-template-columns: 1fr;

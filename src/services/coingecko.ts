@@ -2,11 +2,9 @@ import type { CoinGeckoMarket, TrendingCoin, PriceData } from '../types';
 
 const BASE_URL = 'https://api.coingecko.com/api/v3';
 
-// Track last request time to avoid rate limiting
 let lastRequestTime = 0;
-const MIN_REQUEST_INTERVAL = 2000; // 2 seconds between requests
+const MIN_REQUEST_INTERVAL = 2000;
 
-// Helper to throttle requests
 const throttleRequest = async () => {
   const now = Date.now();
   const timeSinceLastRequest = now - lastRequestTime;
@@ -20,9 +18,6 @@ const throttleRequest = async () => {
   lastRequestTime = Date.now();
 };
 
-/**
- * Fetch trending coins
- */
 export const fetchTrendingCoins = async () => {
   try {
     await throttleRequest();
@@ -40,9 +35,6 @@ export const fetchTrendingCoins = async () => {
   }
 };
 
-/**
- * Fetch coins market data with search query
- */
 export const fetchCoinsMarket = async (page: number = 1, perPage: number = 50) => {
   try {
     await throttleRequest();
@@ -62,9 +54,6 @@ export const fetchCoinsMarket = async (page: number = 1, perPage: number = 50) =
   }
 };
 
-/**
- * Fetch prices for specific token IDs with full market data
- */
 export const fetchTokenPrices = async (tokenIds: string[]): Promise<Record<string, PriceData>> => {
   if (tokenIds.length === 0) return {};
 
@@ -97,9 +86,6 @@ export const fetchTokenPrices = async (tokenIds: string[]): Promise<Record<strin
   }
 };
 
-/**
- * Fetch simple price updates (lightweight, for frequent polling)
- */
 export const fetchSimplePrices = async (tokenIds: string[]): Promise<Record<string, number>> => {
   if (tokenIds.length === 0) return {};
 
@@ -116,7 +102,6 @@ export const fetchSimplePrices = async (tokenIds: string[]): Promise<Record<stri
 
     const data = await response.json();
     
-    // Convert to price map
     const priceMap: Record<string, number> = {};
     Object.keys(data).forEach(id => {
       priceMap[id] = data[id].usd;
@@ -129,9 +114,6 @@ export const fetchSimplePrices = async (tokenIds: string[]): Promise<Record<stri
   }
 };
 
-/**
- * Check API status
- */
 export const checkAPIStatus = async (): Promise<boolean> => {
   try {
     const response = await fetch(`${BASE_URL}/ping`);

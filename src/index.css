@@ -31,7 +31,6 @@ body {
   min-height: 100vh;
 }
 
-/* Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -50,7 +49,6 @@ body {
   background: #373A40;
 }
 
-/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -116,7 +114,6 @@ body {
   animation: priceDown 1s ease-out;
 }
 
-/* Button base styles */
 button {
   font-family: 'Inter', sans-serif;
   cursor: pointer;
